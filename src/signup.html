@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ishi To Go! - Second Page</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="signup-body">
+  <div class="background-blur"></div>
+  
+  <header class="main-header">
+    <div class="header-bar">
+      <div class="header-sidebar"></div>
+      <div class="header-text">
+        <i>Sign up! </i> <span class="subtitle"> > Ishi is asking your username..</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="signup-container">
+    <div class="signup-box">
+      <h2 class="signup-title">Create your account</h2>
+      <form class="signup-form">
+        <div class="form-group">
+          <label for="signupUsername">Username:</label>
+          <input type="text" id="signupUsername" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="signupEmail">Email:</label>
+          <input type="email" id="signupEmail" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="signupPassword">Password:</label>
+          <input type="password" id="signupPassword" name="password" required>
+        </div>
+        <button type="submit" class="signup-btn">
+          <span>S</span><span>i</span><span>g</span><span>n</span> <span>U</span><span>p</span>
+        </button>
+      </form>
+      <p class="login-link">Already have an account? <a href="loginPage.html">Log In</a> here...</p>
+    </div>
+  </div>
+
+  <button id="backBtn" class="small-btn">
+    <span>G</span><span>o</span>&nbsp;<span>b</span><span>a</span><span>c</span><span>k</span>
+  </button>
+
+  <footer class="main-footer">
+       
+  </footer>
+
+  <script>
+    document.getElementById('backBtn').onclick = function() {
+      window.location.href = "index.html";
+    };
+  </script>
+</body>
+
