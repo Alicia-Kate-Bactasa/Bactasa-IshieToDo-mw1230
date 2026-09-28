@@ -56,6 +56,23 @@
     document.getElementById('backBtn').onclick = function() {
       window.location.href = "index.html";
     };
+
+    document.querySelector('.signup-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('signupUsername').value,
+          email: document.getElementById('signupEmail').value,
+          password: document.getElementById('signupPassword').value
+        })
+      });
+      const result = await response.json();
+      if (!response.ok) return alert(result.error);
+      localStorage.setItem('userId', result.id);
+      window.location.href = 'taskplanner.html';
+    });
   </script>
 </body>
 

@@ -60,12 +60,8 @@
     const emptyState = document.getElementById('emptyState');
     const expenseCount = document.getElementById('expenseCount');
     const totalAmount = document.getElementById('totalAmount');
-    const storageKey = 'ishiExpenses';
-    let expenses = JSON.parse(localStorage.getItem(storageKey) || '[]');
-
-    function saveExpenses() {
-      localStorage.setItem(storageKey, JSON.stringify(expenses));
-    }
+    const userId = Number(localStorage.getItem('userId'));
+    let expenses = [];
 
     function renderExpenses() {
       expenseList.innerHTML = '';
@@ -84,7 +80,7 @@
           </div>`;
         item.querySelector('.task-name').textContent = expense.name;
         item.querySelector('.expense-category').textContent = expense.category;
-        item.querySelector('.amount').textContent = '$' + expense.amount.toFixed(2);
+        item.querySelector('.amount').textContent = '$' + Number(expense.amount).toFixed(2);
         expenseList.appendChild(item);
       });
       emptyState.hidden = expenses.length > 0;
@@ -94,20 +90,29 @@
       }, 0).toFixed(2);
     }
 
-    expenseForm.addEventListener('submit', function(event) {
+    async function loadExpenses() {
+      const response = await fetch('/api/expenses?user_id=' + userId);
+      expenses = await response.json();
+      renderExpenses();
+    }
+
+    expenseForm.addEventListener('submit', async function(event) {
       event.preventDefault();
       const name = expenseInput.value.trim();
       const amount = Number(amountInput.value);
       const category = categoryInput.value.trim();
       if (!name || !Number.isFinite(amount) || amount <= 0 || !category) return;
-      expenses.push({ id: Date.now(), name: name, amount: amount, category: category });
-      saveExpenses();
-      renderExpenses();
+      await fetch('/api/expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, name: name, amount: amount, category: category })
+      });
+      await loadExpenses();
       expenseForm.reset();
       expenseInput.focus();
     });
 
-    expenseList.addEventListener('click', function(event) {
+    expenseList.addEventListener('click', async function(event) {
       const button = event.target.closest('button');
       if (!button) return;
       const id = Number(button.dataset.id);
@@ -144,23 +149,28 @@
         const amount = Number(item.querySelector('.edit-amount').value);
         const category = item.querySelector('.edit-category').value.trim();
         if (!name || !Number.isFinite(amount) || amount <= 0 || !category) return;
-        expense.name = name;
-        expense.amount = amount;
-        expense.category = category;
+        await fetch('/api/expenses/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId, name: name, amount: amount, category: category })
+        });
       } else if (button.dataset.action === 'delete') {
-        expenses = expenses.filter(function(item) { return item.id !== id; });
+        await fetch('/api/expenses/' + id + '?user_id=' + userId, { method: 'DELETE' });
       } else {
         return;
       }
-      saveExpenses();
-      renderExpenses();
+      await loadExpenses();
     });
 
     document.getElementById('backBtn').addEventListener('click', function() {
       window.location.href = 'index.html';
     });
 
-    renderExpenses();
+    if (!userId) {
+      window.location.href = 'loginPage.html';
+    } else {
+      loadExpenses();
+    }
   </script>
 </body>
 </html>
